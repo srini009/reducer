@@ -7,7 +7,6 @@ enable_testing ()
 add_definitions (-g -Wextra -Wall -Wpedantic)
 
 option (ENABLE_TESTS    "Build tests" OFF)
-option (ENABLE_EXAMPLES "Build examples" OFF)
 option (ENABLE_AGGREGATOR   "Build the aggregator module" ON)
 
 option (ENABLE_BEDROCK  "Build bedrock module" OFF)
@@ -60,6 +59,5 @@ add_subdirectory (src)
 if(${ENABLE_TESTS})
   add_subdirectory (tests)
 endif(${ENABLE_TESTS})
-if(${ENABLE_EXAMPLES})
-  add_subdirectory (examples)
-endif(${ENABLE_EXAMPLES})
+
+add_subdirectory (bin)
