@@ -14,8 +14,6 @@
 #include "reducer/reducer-common.h"
 #include "uthash.h"
 
-static inline hg_return_t hg_proc_reducer_metric_id_t(hg_proc_t proc, reducer_metric_id_t *id);
-
 /* Admin RPC types */
 
 /* Client RPC types */
