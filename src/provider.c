@@ -123,7 +123,6 @@ static void reducer_finalize_provider(void* p)
     margo_info(provider->mid, "Finalizing REDUCER provider");
     margo_deregister(provider->mid, provider->metric_reduce_id);
     /* deregister other RPC ids ... */
-    remove_all_metrics(provider);
     free(provider);
     margo_info(provider->mid, "REDUCER provider successfuly finalized");
 }
