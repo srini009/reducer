@@ -168,7 +168,6 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     out.ret = REDUCER_SUCCESS;
 
 finish:
-    free(b);
     hret = margo_respond(h, &out);
     hret = margo_free_input(h, &in);
     margo_destroy(h);
