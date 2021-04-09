@@ -26,7 +26,10 @@ int main(int argc, char** argv)
     size_t addr_str_size = 128;
     margo_addr_to_string(mid, addr_str, &addr_str_size, my_address);
     margo_addr_free(mid,my_address);
-    fprintf(stderr, "Server running at address %s, with provider id 42", addr_str);
+
+    FILE *fp = fopen("reducer.add", "w");
+    fprintf(fp, "%s %d\n", addr_str, 42);
+    fclose(fp);
 
     struct reducer_provider_args args = REDUCER_PROVIDER_ARGS_INIT;
 
