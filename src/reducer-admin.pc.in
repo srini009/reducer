@@ -3,9 +3,9 @@ exec_prefix=${prefix}
 libdir=${prefix}/lib
 includedir=${prefix}/include
 
-Name: symbiomon-admin
+Name: reducer-admin
 Description: <insert description here>
-Version: @SYMBIOMON_VERSION@
+Version: @REDUCER_VERSION@
 
 Requires: margo
 Libs: -L${libdir} @ADMIN_PRIVATE_LIBS@

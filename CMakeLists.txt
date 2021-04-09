@@ -1,14 +1,14 @@
 # (C) 2020 The University of Chicago 
 # See COPYRIGHT in top-level directory.
 cmake_minimum_required (VERSION 3.8)
-project (symbiomon C) # add CXX if needed
+project (reducer C) # add CXX if needed
 enable_testing ()
 
 add_definitions (-g -Wextra -Wall -Wpedantic)
 
 option (ENABLE_TESTS    "Build tests" OFF)
 option (ENABLE_EXAMPLES "Build examples" OFF)
-option (ENABLE_AGGREGATOR   "Build the aggregator module" OFF)
+option (ENABLE_AGGREGATOR   "Build the aggregator module" ON)
 
 option (ENABLE_BEDROCK  "Build bedrock module" OFF)
 
@@ -50,11 +50,11 @@ pkg_check_modules (ABTIO REQUIRED IMPORTED_TARGET abt-io)
 #pkg_check_modules (JSONC REQUIRED IMPORTED_TARGET json-c)
 
 # library version set here (e.g. for shared libs).
-set (SYMBIOMON_VERSION_MAJOR 0)
-set (SYMBIOMON_VERSION_MINOR 1)
-set (SYMBIOMON_VERSION_PATCH 0)
-set (SYMBIOMON_VERSION
-     "${SYMBIOMON_VERSION_MAJOR}.${SYMBIOMON_VERSION_MINOR}.${SYMBIOMON_VERSION_PATCH}")
+set (REDUCER_VERSION_MAJOR 0)
+set (REDUCER_VERSION_MINOR 1)
+set (REDUCER_VERSION_PATCH 0)
+set (REDUCER_VERSION
+     "${REDUCER_VERSION_MAJOR}.${REDUCER_VERSION_MINOR}.${REDUCER_VERSION_PATCH}")
 
 add_subdirectory (src)
 if(${ENABLE_TESTS})

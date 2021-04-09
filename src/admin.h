@@ -7,10 +7,10 @@
 #define _ADMIN_H
 
 #include "types.h"
-#include "symbiomon/symbiomon-admin.h"
+#include "reducer/reducer-admin.h"
 
-typedef struct symbiomon_admin {
+typedef struct reducer_admin {
    margo_instance_id mid;
-} symbiomon_admin;
+} reducer_admin;
 
 #endif

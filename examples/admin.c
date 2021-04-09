@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <margo.h>
-#include <symbiomon/symbiomon-admin.h>
+#include <reducer/reducer-admin.h>
 
 #define FATAL(...) \
     do { \
@@ -22,8 +22,8 @@ int main(int argc, char** argv)
     }
 
     hg_return_t hret;
-    symbiomon_return_t ret;
-    symbiomon_admin_t admin;
+    reducer_return_t ret;
+    reducer_admin_t admin;
     hg_addr_t svr_addr;
     const char* svr_addr_str = argv[1];
 
@@ -36,15 +36,15 @@ int main(int argc, char** argv)
     }
 
     margo_info(mid,"Initializing admin");
-    ret = symbiomon_admin_init(mid, &admin);
-    if(ret != SYMBIOMON_SUCCESS) {
-        FATAL(mid,"symbiomon_admin_init failed (ret = %d)", ret);
+    ret = reducer_admin_init(mid, &admin);
+    if(ret != REDUCER_SUCCESS) {
+        FATAL(mid,"reducer_admin_init failed (ret = %d)", ret);
     }
 
     margo_info(mid,"Finalizing admin");
-    ret = symbiomon_admin_finalize(admin);
-    if(ret != SYMBIOMON_SUCCESS) {
-        FATAL(mid,"symbiomon_admin_finalize failed (ret = %d)", ret);
+    ret = reducer_admin_finalize(admin);
+    if(ret != REDUCER_SUCCESS) {
+        FATAL(mid,"reducer_admin_finalize failed (ret = %d)", ret);
     }
 
     hret = margo_addr_free(mid, svr_addr);

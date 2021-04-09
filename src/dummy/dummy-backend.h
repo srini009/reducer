@@ -6,8 +6,8 @@
 #ifndef _DUMMY_BACKEND_H
 #define _DUMMY_BACKEND_H
 
-#include "symbiomon/symbiomon-server.h"
+#include "reducer/reducer-server.h"
 
-symbiomon_return_t symbiomon_provider_register_dummy_backend(symbiomon_provider_t provider);
+reducer_return_t reducer_provider_register_dummy_backend(reducer_provider_t provider);
 
 #endif
