@@ -44,7 +44,7 @@ reducer_return_t reducer_client_finalize(reducer_client_t client)
 }
 
 /* APIs for remote monitoring clients */
-reducer_return_t reducer_metric_reduce(const char *ns, const char *name, reducer_metric_reduction_op_t op, reducer_metric_handle_t handle)
+reducer_return_t reducer_metric_reduce(const char *ns, const char *name, const char* key_start, int32_t agg_id, reducer_metric_reduction_op_t op, reducer_metric_handle_t handle)
 {
     if(!ns || !name)
         return REDUCER_ERR_INVALID_NAME;
@@ -56,6 +56,8 @@ reducer_return_t reducer_metric_reduce(const char *ns, const char *name, reducer
     hg_return_t ret;
     in.ns = ns;
     in.name = name;
+    in.key_start = key_start;
+    in.agg_id = agg_id;
     in.op = op;
 
     ret = margo_create(handle->client->mid, handle->addr, handle->client->metric_reduce_id, &h);
