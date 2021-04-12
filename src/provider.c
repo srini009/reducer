@@ -173,7 +173,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     int i = 0;
     for(i = 0; i < max_keys; i++)
        keys[i] = (void*)malloc(sizeof(char)*keylen);
-       vals[i] = (void*)malloc(sizeof(double)*vallen);
+       vals[i] = (void*)calloc(vallen, sizeof(double));
 
     hg_size_t * keysizes = (hg_size_t *)malloc(sizeof(hg_size_t)*in.max_keys);
     hg_size_t * valsizes = (hg_size_t *)malloc(sizeof(hg_size_t)*in.max_keys);
@@ -184,7 +184,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     assert(ret == SDSKV_SUCCESS);
     fprintf(stderr, "Num keys received: %d\n", max_keys);
     for(i = 0; i < max_keys; i++)
-        fprintf(stderr, "Received key with size: %s\n", (char *)keys[i]);
+        fprintf(stderr, "Received key with size: %s\n", (double *)vals[i][0]);
 
     /* set the response */
     out.ret = REDUCER_SUCCESS;
