@@ -176,7 +176,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     int i = 0;
     fprintf(stderr, "Num keys received: %d\n", max_keys);
     for(i = 0; i < max_keys; i++)
-        fprintf(stderr, "Received key with size: %d\n", keysizes[i]);
+        fprintf(stderr, "Received key with size: %s\n", (char *)keys[i]);
 
     /* set the response */
     out.ret = REDUCER_SUCCESS;
