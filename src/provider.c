@@ -182,14 +182,14 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     int ret = sdskv_list_keyvals_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], (const void*)in.key_start, sizeof(in.key_start),
                                          (const void *)prefix, sizeof(prefix), (void**)keys, keysizes, (void**)vals, valsizes, &max_keys);
     assert(ret == SDSKV_SUCCESS);
-    fprintf(stderr, "Num keys received: %d\n", max_keys);
+    //fprintf(stderr, "Num keys received: %d\n", max_keys);
     //for(i = 0; i < max_keys; i++)
     //    fprintf(stderr, "Received key with size: %d\n", ((double *)vals[i])[0]);
     double val = 0;
     size_t val_size = sizeof(double);
     ret = sdskv_get(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], (const void*)in.key_start, sizeof(in.key_start), (void*)&val, &val_size); 
     assert(ret == SDSKV_SUCCESS);
-    fprintf(stderr, "Val is: %f\n", val);
+    fprintf(stderr, "At server val is: %f\n", val);
 
     /* set the response */
     out.ret = REDUCER_SUCCESS;
