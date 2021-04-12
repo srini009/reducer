@@ -189,7 +189,8 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     size_t val_size = sizeof(double);
     ret = sdskv_get(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], (const void*)in.key_start, sizeof(in.key_start), (void*)&val, &val_size); 
     assert(ret == SDSKV_SUCCESS);
-    fprintf(stderr, "At server val is: %f\n", val);
+    if(!val)
+        fprintf(stderr, "At server val is: %f\n", val);
 
     /* set the response */
     out.ret = REDUCER_SUCCESS;
