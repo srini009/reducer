@@ -162,9 +162,12 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     }
     
     char *prefix = (char *)malloc(256*sizeof(char));
-    strcpy(prefix, in.ns);
+    /*strcpy(prefix, in.ns);
     strcat(prefix, "_");
-    strcat(prefix, in.name);
+    strcat(prefix, in.name);*/
+    strcpy(prefix, in.key_start);
+    strcat(prefix, "_");
+    strcat(prefix, "MAX");
     size_t keylen = 256;
     size_t vallen = 8;
     void **keys = (void **)malloc(sizeof(void*)*in.max_keys);
@@ -187,7 +190,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     //    fprintf(stderr, "Received key with size: %d\n", ((double *)vals[i])[0]);
     double val = 0;
     size_t val_size = sizeof(double);
-    ret = sdskv_get(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], (const void*)in.key_start, sizeof(in.key_start), (void*)&val, &val_size); 
+    ret = sdskv_get(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], (const void*)prefix, sizeof(prefix), (void*)&val, &val_size); 
     assert(ret == SDSKV_SUCCESS);
     if(!val && (in.op == REDUCER_REDUCTION_OP_MAX))
         fprintf(stderr, "At server val is: %lf\n", val);
