@@ -184,7 +184,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     assert(ret == SDSKV_SUCCESS);
     fprintf(stderr, "Num keys received: %d\n", max_keys);
     for(i = 0; i < max_keys; i++)
-        fprintf(stderr, "Received key with size: %s\n", (double *)vals[i][0]);
+        fprintf(stderr, "Received key with size: %d\n", ((double *)vals[i])[0]);
 
     /* set the response */
     out.ret = REDUCER_SUCCESS;
