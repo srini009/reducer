@@ -191,7 +191,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     double val = 0;
     size_t val_size = sizeof(double);
     fprintf(stderr, "At server: trying to reduce metric with key: %s and aggid: %u\n", prefix, in.agg_id);
-    ret = sdskv_get(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], (const void*)prefix, sizeof(prefix), (void*)&val, &val_size); 
+    ret = sdskv_get(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], (const void*)prefix, strlen(prefix), (void*)&val, &val_size); 
     assert(ret == SDSKV_SUCCESS);
     if(!val && (in.op == REDUCER_REDUCTION_OP_MAX))
         fprintf(stderr, "At server val is: %lf\n", val);
