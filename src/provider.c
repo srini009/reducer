@@ -102,7 +102,7 @@ int reducer_provider_register(
         p->use_aggregator = 1;
         p->aggphs = aggphs;
         p->aggdbids = aggdbids;
-	fprintf(stderr, "Successfully setup aggregator support with num_aggregators: %d \n", p->num_aggregators);
+	fprintf(stderr, "Successfully setup aggregator support\n");
     } else {
         fprintf(stderr, "AGGREGATOR_ADDRESS_FILE is not set. Continuing on without aggregator support");
     }
@@ -160,13 +160,30 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
         out.ret = REDUCER_ERR_FROM_MERCURY;
         goto finish;
     }
+    
+    char *prefix = (char *)malloc(256*sizeof(char));
+    strcpy(prefix, in.ns);
+    strcat(prefix, "_");
+    strcat(prefix, in.name);
+    void **keys = (void **)malloc(sizeof(void*)*in.max_keys);
+    hg_size_t * keysizes = (hg_size_t *)malloc(sizeof(hg_size_t)*in.max_keys);
+    hg_size_t max_keys = in.max_keys;
 
     fprintf(stderr, "Trying to reduce metric with name: %s, and ns: %s\n", in.name, in.ns);
+    int ret = sdskv_list_keys_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[agg_id], (const void*)in.key_start, sizeof(in.key_start),
+                                         (const void *)prefix, sizeof(prefix), keys, keysizes, &max_keys);
+    assert(ret == SDSKV_SUCCESS);
+    int i = 0;
+    for(i = 0; i < max_keys; i++)
+        fprintf(stderr, "Received key: %s\n", (char*)keys[i]);
 
     /* set the response */
     out.ret = REDUCER_SUCCESS;
 
 finish:
+    free(prefix);
+    free(keys);
+    free(keysizes);
     hret = margo_respond(h, &out);
     hret = margo_free_input(h, &in);
     margo_destroy(h);
