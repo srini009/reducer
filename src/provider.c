@@ -166,7 +166,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     strcat(prefix, "_");
     strcat(prefix, in.name);
     size_t keylen = 256;
-    size_t vallen = 8
+    size_t vallen = 8;
     void **keys = (void **)malloc(sizeof(void*)*in.max_keys);
     void **vals = (void **)malloc(sizeof(void*)*in.max_keys);
     hg_size_t max_keys = in.max_keys;
