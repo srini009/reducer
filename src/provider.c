@@ -172,14 +172,14 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     hg_size_t max_keys = in.max_keys;
     int i = 0;
     for(i = 0; i < max_keys; i++)
-       keys[i] = (void*)malloc(sizeof(char)*keyval);
+       keys[i] = (void*)malloc(sizeof(char)*keylen);
        vals[i] = (void*)malloc(sizeof(double)*vallen);
 
     hg_size_t * keysizes = (hg_size_t *)malloc(sizeof(hg_size_t)*in.max_keys);
     hg_size_t * valsizes = (hg_size_t *)malloc(sizeof(hg_size_t)*in.max_keys);
 
     fprintf(stderr, "Trying to reduce metric with name: %s, and ns: %s, and %s, and %d\n", in.name, in.ns, in.key_start, in.max_keys);
-    int ret = sdskv_list_keys_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], (const void*)in.key_start, sizeof(in.key_start),
+    int ret = sdskv_list_keyvals_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], (const void*)in.key_start, sizeof(in.key_start),
                                          (const void *)prefix, sizeof(prefix), (void**)keys, keysizes, (void**)vals, valsizes, &max_keys);
     assert(ret == SDSKV_SUCCESS);
     fprintf(stderr, "Num keys received: %d\n", max_keys);
