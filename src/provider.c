@@ -166,7 +166,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     strcat(prefix, "_");
     strcat(prefix, in.name);*/
     strcpy(prefix, in.key_start);
-    strcat(prefix, "_");
+    strcat(prefix, "__");
     strcat(prefix, "MAX");
     size_t keylen = 256;
     size_t vallen = 8;
