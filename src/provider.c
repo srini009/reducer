@@ -181,7 +181,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     hg_size_t * keysizes = (hg_size_t *)malloc(sizeof(hg_size_t)*in.max_keys);
     hg_size_t * valsizes = (hg_size_t *)malloc(sizeof(hg_size_t)*in.max_keys);
 
-    fprintf(stderr, "At server: trying to reduce metric with name: %s, and ns: %s, and %s, and %d, and aggid: %u\n", in.name, in.ns, in.key_start, in.max_keys, in.agg_id);
+    //fprintf(stderr, "At server: trying to reduce metric with name: %s, and ns: %s, and %s, and %d, and aggid: %u\n", in.name, in.ns, in.key_start, in.max_keys, in.agg_id);
     int ret = sdskv_list_keyvals_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], (const void*)in.key_start, sizeof(in.key_start),
                                          (const void *)prefix, sizeof(prefix), (void**)keys, keysizes, (void**)vals, valsizes, &max_keys);
     assert(ret == SDSKV_SUCCESS);
@@ -190,6 +190,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     //    fprintf(stderr, "Received key with size: %d\n", ((double *)vals[i])[0]);
     double val = 0;
     size_t val_size = sizeof(double);
+    fprintf(stderr, "At server: trying to reduce metric with key: %s and aggid: %u\n", predix, in.agg_id);
     ret = sdskv_get(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], (const void*)prefix, sizeof(prefix), (void*)&val, &val_size); 
     assert(ret == SDSKV_SUCCESS);
     if(!val && (in.op == REDUCER_REDUCTION_OP_MAX))
