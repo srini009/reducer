@@ -225,7 +225,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
 
     /* put the returned strings in an array */
     std::vector<std::string> res;
-    for(auto ptr : list_result) {
+    for(auto ptr : keys) {
         res.push_back(std::string((const char*)ptr));
         std::cout << *res.rbegin() << std::endl;
     }
