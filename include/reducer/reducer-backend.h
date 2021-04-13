@@ -44,6 +44,6 @@ typedef struct reducer_backend_impl {
  *
  * @return REDUCER_SUCCESS or error code defined in reducer-common.h 
  */
-reducer_return_t reducer_provider_register_backend();
+extern "C" reducer_return_t reducer_provider_register_backend();
 
 #endif
