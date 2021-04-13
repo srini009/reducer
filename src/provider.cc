@@ -7,6 +7,7 @@
 #include <string>
 #include <iostream>
 #include <vector>
+#include <unistd.h>
 #include "reducer/reducer-server.h"
 #include "reducer/reducer-common.h"
 #include "reducer/reducer-backend.h"
