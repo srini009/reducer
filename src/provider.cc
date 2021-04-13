@@ -210,7 +210,7 @@ finish:
 
 static DEFINE_MARGO_RPC_HANDLER(reducer_metric_reduce_ult)
 
-reducer_return_t reducer_provider_register_backend()
+extern "C" reducer_return_t reducer_provider_register_backend()
 {
     return REDUCER_SUCCESS;
 }
