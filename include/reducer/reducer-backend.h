@@ -9,6 +9,9 @@
 #include <reducer/reducer-server.h>
 #include <reducer/reducer-common.h>
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
 typedef reducer_return_t (*reducer_backend_create_fn)(reducer_provider_t, void**);
 typedef reducer_return_t (*reducer_backend_open_fn)(reducer_provider_t, void**);
 typedef reducer_return_t (*reducer_backend_close_fn)(void*);
@@ -46,4 +49,7 @@ typedef struct reducer_backend_impl {
  */
 reducer_return_t reducer_provider_register_backend();
 
+#if defined(__cplusplus)
+}
+#endif
 #endif
