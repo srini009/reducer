@@ -213,31 +213,35 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
 
     /* Perform global reduction */
     switch(in.op) {
-        case REDUCER_REDUCTION_OP_SUM:
+        case REDUCER_REDUCTION_OP_SUM: {
             double sum = 0.0;
             for(unsigned int i = 0; i < max_keys; i++)
               for(unsigned int j = 0; j < in.num_vals; j++)
                 sum += val_doubles[i][j];
             break;
-        case REDUCER_REDUCTION_OP_MIN:
+        }
+        case REDUCER_REDUCTION_OP_MIN: {
             double min = val_doubles[0][0];
             for(unsigned int i = 1; i < max_keys; i++)
               for(unsigned int j = 0; j < in.num_vals; j++)
                 min = (min > val_doubles[i][j] ? val_doubles[i][j] : min);
             break;
-        case REDUCER_REDUCTION_OP_MAX:
+        }
+        case REDUCER_REDUCTION_OP_MAX: {
             double max = val_doubles[0][0];
             for(unsigned int i = 1; i < max_keys; i++)
               for(unsigned int j = 0; j < in.num_vals; j++)
                 max = (max < val_doubles[i][j] ? val_doubles[i][j] : max);
             break;
-        case REDUCER_REDUCTION_OP_AVG:
+        }
+        case REDUCER_REDUCTION_OP_AVG: {
             double sum = 0.0, avg = 0.0;
             for(unsigned int i = 0; i < max_keys; i++)
               for(unsigned int j = 0; j < in.num_vals; j++)
                 sum += val_doubles[i][j];
             avg = sum/(double)max_keys;
             break;
+        }
         case REDUCER_REDUCTION_OP_ANOMALY:
             break;
     }
