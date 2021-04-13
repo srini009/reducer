@@ -165,34 +165,6 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
         goto finish;
     }
     
-    /*char *prefix = (char *)malloc(256*sizeof(char));
-    strcpy(prefix, in.ns);
-    strcat(prefix, "_");
-    strcat(prefix, in.name);
-    strcpy(prefix, in.key_start);
-    strcat(prefix, "_");
-    strcat(prefix, "MAX");
-    size_t keylen = 256;
-    size_t vallen = 8;
-    void **keys = (void **)malloc(sizeof(void*)*in.max_keys);
-    void **vals = (void **)malloc(sizeof(void*)*in.max_keys);
-    hg_size_t max_keys = in.max_keys;
-    int i = 0;
-    for(i = 0; i < max_keys; i++)
-       keys[i] = (void*)malloc(sizeof(char)*keylen);
-       vals[i] = (void*)calloc(vallen, sizeof(double));
-
-    hg_size_t * keysizes = (hg_size_t *)malloc(sizeof(hg_size_t)*in.max_keys);
-    hg_size_t * valsizes = (hg_size_t *)malloc(sizeof(hg_size_t)*in.max_keys);
-
-    //fprintf(stderr, "At server: trying to reduce metric with name: %s, and ns: %s, and %s, and %d, and aggid: %u\n", in.name, in.ns, in.key_start, in.max_keys, in.agg_id);
-    int ret = sdskv_list_keyvals_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], (const void*)in.key_start, sizeof(in.key_start),
-                                         (const void *)prefix, sizeof(prefix), (void**)keys, keysizes, (void**)vals, valsizes, &max_keys);
-    assert(ret == SDSKV_SUCCESS);*/
-    //fprintf(stderr, "Num keys received: %d\n", max_keys);
-    //for(i = 0; i < max_keys; i++)
-    //    fprintf(stderr, "Received key with size: %d\n", ((double *)vals[i])[0]);
-
     std::string keys_after(in.key_start);
     keys_after += "_";
     keys_after += "MAX";
@@ -201,8 +173,8 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     prefix += "_";
     prefix += in.name;
     size_t max_keys = in.max_keys;
-    size_t max_key_size = 256;
-    size_t max_val_size = 8;
+    size_t max_key_size = 256; //max size of stringified metric string
+    size_t max_val_size = 8; //max number of doubles you expect to receive
     std::vector<std::vector<char>> key_strings(max_keys, std::vector<char>(max_key_size+1));
     std::vector<std::vector<double>> val_doubles(max_keys, std::vector<double>(max_val_size+1));
     std::vector<void*> keys(max_keys);
@@ -215,32 +187,18 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
         vals[i] = (void*)val_doubles[i].data();
     }
 
-    std::cout << "Expecting " << max_keys << " keys after " << keys_after << " with prefix " << prefix << std::endl;
-
     int ret = sdskv_list_keyvals(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
                 (const void*)keys_after.c_str(), keys_after.size()+1,
                 keys.data(), ksizes.data(), vals.data(), vsizes.data(), &max_keys);
     assert(ret == SDSKV_SUCCESS);
-    fprintf(stderr, "Num keys received: %d and pid: %d\n", max_keys, getpid());
-
-    /* put the returned strings in an array */
-    /*std::vector<std::string> res;
-    for(auto ptr : keys) {
-        res.push_back(std::string((const char*)ptr));
-        std::cout << *res.rbegin() << std::endl;
-    }*/
 
     for(unsigned int i = 0; i < max_keys; i++)
-        std::cout << "Received val: " << val_doubles[i][0] << std::endl;
-        //std::cout << "Received key: " << res[i].c_str() << std::endl;
+        std::cout << "Received key: " << key_strings[i] << " and val: " << val_doubles[i][0] << std::endl;
 
     /* set the response */
     out.ret = REDUCER_SUCCESS;
 
 finish:
-    //free(prefix);
-    //free(keys);
-    //free(keysizes);
     hret = margo_respond(h, &out);
     hret = margo_free_input(h, &in);
     margo_destroy(h);
