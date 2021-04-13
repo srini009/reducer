@@ -216,7 +216,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 (const void*)keys_after.c_str(), keys_after.size()+1,
                 prefix.data(), prefix.size(),
                 list_result.data(), ksizes.data(), &max_keys);*/
-    int ret = sdskv_list_keys_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
+    int ret = sdskv_list_keys(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
                 (const void*)keys_after.c_str(), keys_after.size()+1,
                 list_result.data(), ksizes.data(), &max_keys);
     assert(ret == SDSKV_SUCCESS);
