@@ -193,7 +193,9 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     //    fprintf(stderr, "Received key with size: %d\n", ((double *)vals[i])[0]);
 
     std::string keys_after(in.key_start);
-    std::string prefix(in.ns + "_" + in.name);
+    std::string prefix(in.ns);
+    prefix += "_";
+    prefix += in.name;
     size_t max_keys = in.max_keys;
     size_t max_key_size = 256;
     std::vector<std::vector<char>> result_strings(max_keys, std::vector<char>(max_key_size+1));
