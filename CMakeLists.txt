@@ -4,7 +4,7 @@ cmake_minimum_required (VERSION 3.8)
 project (reducer C CXX) # add CXX if needed
 enable_testing ()
 
-add_definitions (-g -Wextra -Wall -Wpedantic)
+add_definitions (-g -Wextra -Wall -Wpedantic -fpermissive)
 
 option (ENABLE_TESTS    "Build tests" OFF)
 option (ENABLE_AGGREGATOR   "Build the aggregator module" ON)
