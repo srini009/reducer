@@ -193,6 +193,9 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     //    fprintf(stderr, "Received key with size: %d\n", ((double *)vals[i])[0]);
 
     std::string keys_after(in.key_start);
+    keys_after += "_";
+    keys_after += "MAX";
+
     std::string prefix(in.ns);
     prefix += "_";
     prefix += in.name;
@@ -206,7 +209,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
         list_result[i] = (void*)result_strings[i].data();
     }
 
-    std::cout << "Expecting " << max_keys << " keys after " << keys_after << std::endl;
+    std::cout << "Expecting " << max_keys << " keys after " << keys_after << " with prefix " << prefix << std::endl;
 
     int ret = sdskv_list_keys_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
                 (const void*)keys_after.c_str(), keys_after.size()+1,
@@ -214,8 +217,16 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 list_result.data(), ksizes.data(), &max_keys);
     assert(ret == SDSKV_SUCCESS);
     fprintf(stderr, "Num keys received: %d\n", max_keys);
-    for(int i = 0; i < max_keys; i++)
-        std::cout << "Received key: " << list_result[i] << std::endl;
+
+    /* put the returned strings in an array */
+    std::vector<std::string> res;
+    for(auto ptr : list_result) {
+        res.push_back(std::string((const char*)ptr));
+        std::cout << *res.rbegin() << std::endl;
+    }
+
+    for(unsigned int i = 0; i < max_keys; i++)
+        std::cout << "Received key: " << res[i].c_str() << std::endl;
 
     /* set the response */
     out.ret = REDUCER_SUCCESS;
