@@ -211,12 +211,12 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
 
     std::cout << "Expecting " << max_keys << " keys after " << keys_after << " with prefix " << prefix << std::endl;
 
-    /*int ret = sdskv_list_keys_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
+    int ret = sdskv_list_keys_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
                 (const void*)keys_after.c_str(), keys_after.size()+1,
                 prefix.data(), prefix.size(),
                 list_result.data(), ksizes.data(), &max_keys);
     assert(ret == SDSKV_SUCCESS);
-    fprintf(stderr, "Num keys received: %d\n", max_keys);*/
+    fprintf(stderr, "Num keys received: %d\n", max_keys);
 
     /* put the returned strings in an array */
     /*std::vector<std::string> res;
