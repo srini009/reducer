@@ -223,14 +223,14 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     fprintf(stderr, "Num keys received: %d and pid: %d\n", max_keys, getpid());
 
     /* put the returned strings in an array */
-    /*std::vector<std::string> res;
+    std::vector<std::string> res;
     for(auto ptr : list_result) {
         res.push_back(std::string((const char*)ptr));
         std::cout << *res.rbegin() << std::endl;
     }
 
     for(unsigned int i = 0; i < max_keys; i++)
-        std::cout << "Received key: " << res[i].c_str() << std::endl;*/
+        std::cout << "Received key: " << res[i].c_str() << std::endl;
 
     /* set the response */
     out.ret = REDUCER_SUCCESS;
