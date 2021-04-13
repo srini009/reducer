@@ -167,8 +167,26 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     
     std::string keys_after(in.key_start);
     keys_after += "_";
-    keys_after += "MAX";
 
+    switch(in.op) {
+        case REDUCER_REDUCTION_OP_SUM:
+ 	    keys_after += "SUM";
+            break;
+        case REDUCER_REDUCTION_OP_MIN:
+ 	    keys_after += "MIN";
+            break;
+        case REDUCER_REDUCTION_OP_MAX:
+ 	    keys_after += "MAX";
+            break;
+        case REDUCER_REDUCTION_OP_AVG:
+ 	    keys_after += "AVG";
+            break;
+        case REDUCER_REDUCTION_OP_ANOMALY:
+ 	    keys_after += "ANOMALY";
+            break;
+    }
+
+    /* Prepare for the SDSKV call */
     std::string prefix(in.ns);
     prefix += "_";
     prefix += in.name;
@@ -185,21 +203,54 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     for(unsigned i=0; i<max_keys; i++) {
         keys[i] = (void*)key_strings[i].data();
         vals[i] = (void*)val_doubles[i].data();
-    }
+    } 
 
+    /* Make the SDSKV call */
     int ret = sdskv_list_keyvals(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
                 (const void*)keys_after.c_str(), keys_after.size()+1,
                 keys.data(), ksizes.data(), vals.data(), vsizes.data(), &max_keys);
     assert(ret == SDSKV_SUCCESS);
 
-    std::vector<std::string> res_k;
+    /* Perform global reduction */
+    switch(in.op) {
+        case REDUCER_REDUCTION_OP_SUM:
+            double sum = 0.0;
+            for(unsigned int i = 0; i < max_keys; i++)
+              for(unsigned int j = 0; j < in.num_vals; j++)
+                sum += val_doubles[i][j];
+            break;
+        case REDUCER_REDUCTION_OP_MIN:
+            double min = val_doubles[0][0];
+            for(unsigned int i = 1; i < max_keys; i++)
+              for(unsigned int j = 0; j < in.num_vals; j++)
+                min = (min > val_doubles[i][j] ? val_doubles[i][j] : min);
+            break;
+        case REDUCER_REDUCTION_OP_MAX:
+            double max = val_doubles[0][0];
+            for(unsigned int i = 1; i < max_keys; i++)
+              for(unsigned int j = 0; j < in.num_vals; j++)
+                max = (max < val_doubles[i][j] ? val_doubles[i][j] : max);
+            break;
+        case REDUCER_REDUCTION_OP_AVG:
+            double sum = 0.0, avg = 0.0;
+            for(unsigned int i = 0; i < max_keys; i++)
+              for(unsigned int j = 0; j < in.num_vals; j++)
+                sum += val_doubles[i][j];
+            avg = sum/(double)max_keys;
+            break;
+        case REDUCER_REDUCTION_OP_ANOMALY:
+            break;
+    }
+  
+
+    /*std::vector<std::string> res_k;
     for(auto ptr : keys) {
         res_k.push_back(std::string((const char*)ptr));
     }
 
     for(unsigned int i = 0; i < max_keys; i++)
         std::cout << "Received key: " << res_k[i].c_str() << " and val: " << val_doubles[i][0] << std::endl;
-
+    */
     /* set the response */
     out.ret = REDUCER_SUCCESS;
 
