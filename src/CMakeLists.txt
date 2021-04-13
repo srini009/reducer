@@ -1,6 +1,6 @@
 # set source files
 set (server-src-files
-     provider.c)
+     provider.cc)
 
 set (client-src-files
      client.c)

@@ -1,7 +1,7 @@
 # (C) 2020 The University of Chicago 
 # See COPYRIGHT in top-level directory.
 cmake_minimum_required (VERSION 3.8)
-project (reducer C) # add CXX if needed
+project (reducer C CXX) # add CXX if needed
 enable_testing ()
 
 add_definitions (-g -Wextra -Wall -Wpedantic)
