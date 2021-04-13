@@ -4,6 +4,9 @@
  * See COPYRIGHT in top-level directory.
  */
 #include <assert.h>
+#include <string>
+#include <iostream>
+#include <vector>
 #include "reducer/reducer-server.h"
 #include "reducer/reducer-common.h"
 #include "reducer/reducer-backend.h"
@@ -203,10 +206,11 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
 
     std::cout << "Expecting " << max_keys << " keys after " << keys_after << std::endl;
 
-    ret = sdskv_list_keys_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
+    int ret = sdskv_list_keys_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
                 (const void*)keys_after.c_str(), keys_after.size()+1,
                 prefix.data(), prefix.size(),
                 list_result.data(), ksizes.data(), &max_keys);
+    assert(ret == SDSKV_SUCCESS);
     fprintf(stderr, "Num keys received: %d\n", max_keys);
     for(int i = 0; i < max_keys; i++)
         std::cout << "Received key: " << list_result[i] << std::endl;
@@ -215,9 +219,9 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     out.ret = REDUCER_SUCCESS;
 
 finish:
-    free(prefix);
-    free(keys);
-    free(keysizes);
+    //free(prefix);
+    //free(keys);
+    //free(keysizes);
     hret = margo_respond(h, &out);
     hret = margo_free_input(h, &in);
     margo_destroy(h);
