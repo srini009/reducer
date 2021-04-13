@@ -202,23 +202,24 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     prefix += in.name;
     size_t max_keys = in.max_keys;
     size_t max_key_size = 256;
-    std::vector<std::vector<char>> result_strings(max_keys, std::vector<char>(max_key_size+1));
-    std::vector<void*> list_result(max_keys);
+    size_t max_val_size = 8;
+    std::vector<std::vector<char>> key_strings(max_keys, std::vector<char>(max_key_size+1));
+    std::vector<std::vector<double>> val_doubles(max_keys, std::vector<double>(max_val_size+1));
+    std::vector<void*> keys(max_keys);
+    std::vector<void*> vals(max_keys);
     std::vector<hg_size_t> ksizes(max_keys, max_key_size+1);
+    std::vector<hg_size_t> vsizes(max_keys, max_val_size+1);
 
     for(unsigned i=0; i<max_keys; i++) {
-        list_result[i] = (void*)result_strings[i].data();
+        keys[i] = (void*)key_strings[i].data();
+        vals[i] = (void*)val_doubles[i].data();
     }
 
     std::cout << "Expecting " << max_keys << " keys after " << keys_after << " with prefix " << prefix << std::endl;
 
-    /*int ret = sdskv_list_keys_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
+    int ret = sdskv_list_keyvals(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
                 (const void*)keys_after.c_str(), keys_after.size()+1,
-                prefix.data(), prefix.size(),
-                list_result.data(), ksizes.data(), &max_keys);*/
-    int ret = sdskv_list_keys(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
-                (const void*)keys_after.c_str(), keys_after.size()+1,
-                list_result.data(), ksizes.data(), &max_keys);
+                keys.data(), ksizes.data(), vals.data(), vsizes.data(), &max_keys);
     assert(ret == SDSKV_SUCCESS);
     fprintf(stderr, "Num keys received: %d and pid: %d\n", max_keys, getpid());
 
