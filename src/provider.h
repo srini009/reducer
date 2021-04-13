@@ -14,6 +14,10 @@
 #include <sdskv-client.h>
 #endif
 
+#if defined(__cplusplus)
+extern "C" {
+#endif
+
 typedef struct reducer_provider {
     /* Margo/Argobots/Mercury environment */
     margo_instance_id  mid;                 // Margo instance
@@ -36,5 +40,9 @@ typedef struct reducer_provider {
 } reducer_provider;
 
 reducer_return_t reducer_provider_metric_reduce(reducer_metric_t m, reducer_provider_t provider);
+
+#if defined(__cplusplus)
+}
+#endif
 
 #endif

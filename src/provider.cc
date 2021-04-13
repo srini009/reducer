@@ -22,7 +22,7 @@ static DECLARE_MARGO_RPC_HANDLER(reducer_metric_reduce_ult)
 static void reducer_metric_reduce_ult(hg_handle_t h);
 /* add other RPC declarations here */
 
-int reducer_provider_register(
+extern "C" int reducer_provider_register(
         margo_instance_id mid,
         uint16_t provider_id,
         const struct reducer_provider_args* args,
@@ -127,7 +127,7 @@ static void reducer_finalize_provider(void* p)
     margo_info(provider->mid, "REDUCER provider successfuly finalized");
 }
 
-int reducer_provider_destroy(
+extern "C" int reducer_provider_destroy(
         reducer_provider_t provider)
 {
     margo_instance_id mid = provider->mid;
