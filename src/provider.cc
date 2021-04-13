@@ -161,10 +161,10 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
         goto finish;
     }
     
-    char *prefix = (char *)malloc(256*sizeof(char));
-    /*strcpy(prefix, in.ns);
+    /*char *prefix = (char *)malloc(256*sizeof(char));
+    strcpy(prefix, in.ns);
     strcat(prefix, "_");
-    strcat(prefix, in.name);*/
+    strcat(prefix, in.name);
     strcpy(prefix, in.key_start);
     strcat(prefix, "_");
     strcat(prefix, "MAX");
@@ -184,17 +184,32 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     //fprintf(stderr, "At server: trying to reduce metric with name: %s, and ns: %s, and %s, and %d, and aggid: %u\n", in.name, in.ns, in.key_start, in.max_keys, in.agg_id);
     int ret = sdskv_list_keyvals_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], (const void*)in.key_start, sizeof(in.key_start),
                                          (const void *)prefix, sizeof(prefix), (void**)keys, keysizes, (void**)vals, valsizes, &max_keys);
-    assert(ret == SDSKV_SUCCESS);
+    assert(ret == SDSKV_SUCCESS);*/
     //fprintf(stderr, "Num keys received: %d\n", max_keys);
     //for(i = 0; i < max_keys; i++)
     //    fprintf(stderr, "Received key with size: %d\n", ((double *)vals[i])[0]);
-    double val = 0;
-    size_t val_size = sizeof(double);
-    fprintf(stderr, "At server: trying to reduce metric with key: %s and aggid: %u\n", prefix, in.agg_id);
-    ret = sdskv_get(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], (const void*)prefix, strlen(prefix), (void*)&val, &val_size); 
-    assert(ret == SDSKV_SUCCESS);
-    if(!val && (in.op == REDUCER_REDUCTION_OP_MAX))
-        fprintf(stderr, "At server val is: %lf\n", val);
+
+    std::string keys_after(in.key_start);
+    std::string prefix(in.ns + "_" + in.name);
+    size_t max_keys = in.max_keys;
+    size_t max_key_size = 256;
+    std::vector<std::vector<char>> result_strings(max_keys, std::vector<char>(max_key_size+1));
+    std::vector<void*> list_result(max_keys);
+    std::vector<hg_size_t> ksizes(max_keys, max_key_size+1);
+
+    for(unsigned i=0; i<max_keys; i++) {
+        list_result[i] = (void*)result_strings[i].data();
+    }
+
+    std::cout << "Expecting " << max_keys << " keys after " << keys_after << std::endl;
+
+    ret = sdskv_list_keys_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
+                (const void*)keys_after.c_str(), keys_after.size()+1,
+                prefix.data(), prefix.size(),
+                list_result.data(), ksizes.data(), &max_keys);
+    fprintf(stderr, "Num keys received: %d\n", max_keys);
+    for(int i = 0; i < max_keys; i++)
+        std::cout << "Received key: " << list_result[i] << std::endl;
 
     /* set the response */
     out.ret = REDUCER_SUCCESS;
