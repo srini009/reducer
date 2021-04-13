@@ -192,8 +192,13 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 keys.data(), ksizes.data(), vals.data(), vsizes.data(), &max_keys);
     assert(ret == SDSKV_SUCCESS);
 
+    std::vector<std::string> res_k;
+    for(auto ptr : keys) {
+        res_k.push_back(std::string((const char*)ptr));
+    }
+
     for(unsigned int i = 0; i < max_keys; i++)
-        std::cout << "Received key: " << key_strings[i] << " and val: " << val_doubles[i][0] << std::endl;
+        std::cout << "Received key: " << res_k[i].c_str() << " and val: " << val_doubles[i][0] << std::endl;
 
     /* set the response */
     out.ret = REDUCER_SUCCESS;
