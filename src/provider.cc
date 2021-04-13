@@ -216,7 +216,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 prefix.data(), prefix.size(),
                 list_result.data(), ksizes.data(), &max_keys);
     assert(ret == SDSKV_SUCCESS);
-    fprintf(stderr, "Num keys received: %d\n", max_keys);
+    fprintf(stderr, "Num keys received: %d and pid: %d\n", max_keys, getpid());
 
     /* put the returned strings in an array */
     /*std::vector<std::string> res;
