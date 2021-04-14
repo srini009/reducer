@@ -268,7 +268,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 sd += pow(flattened_data[i] - avg, 2);
 
 	    for(unsigned int i=0; i < current_index; i++) {
-                if ((flattened_data[i] < avg-3*sd) || (m->buffer[i].val > avg+3*sd)) {
+                if ((flattened_data[i] < avg-3*sd) || (flattened_data[i] > avg+3*sd)) {
                 //add a symbiomon metric
                 }
             }
