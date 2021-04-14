@@ -65,9 +65,8 @@ if(${ENABLE_AGGREGATOR})
 endif(${ENABLE_AGGREGATOR})
 
 if(${ENABLE_SYMBIOMON})
-  find_package(symbiomon REQUIRED)
   target_include_directories (reducer-server PUBLIC ${SYMBIOMON_INCLUDE_DIR})
-  target_link_libraries (reducer-server PkgConfig::SYMBIOMON)
+  target_link_libraries (reducer-server ${SYMBIOMON_LIBRARIES})
 endif(${ENABLE_SYMBIOMON})
 
 # admin library
