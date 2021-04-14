@@ -192,9 +192,9 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     prefix += in.name;
     size_t max_keys = in.max_keys;
     size_t max_key_size = 256; //max size of stringified metric string
-    size_t max_val_size = 8; //max number of doubles you expect to receive
+    size_t max_val_size = in.num_vals; //max number of doubles you expect to receive
     std::vector<std::vector<char>> key_strings(max_keys, std::vector<char>(max_key_size+1));
-    std::vector<std::vector<double>> val_doubles(max_keys, std::vector<double>(max_val_size+1));
+    std::vector<std::vector<double>> val_doubles(max_keys, std::vector<double>(max_val_size+1, 0.0));
     std::vector<void*> keys(max_keys);
     std::vector<void*> vals(max_keys);
     std::vector<hg_size_t> ksizes(max_keys, max_key_size+1);
@@ -249,14 +249,19 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
         case REDUCER_REDUCTION_OP_ANOMALY: {
             std::vector<double> flattened_data;
             double sum = 0, avg = 0, sd = 0;
+            unsigned int num_actual_vals = 0;
 	    flattened_data.reserve(max_keys*in.num_vals);
             for(unsigned int i = 0; i < max_keys; i++) {
               for(unsigned int j = 0; j < in.num_vals; j++) {
-		flattened_data.push_back(val_doubles[i][j]);
-                sum += val_doubles[i][j];
+		if(val_doubles[i][j]) {
+                  flattened_data.push_back(val_doubles[i][j]);
+                  sum += val_doubles[i][j];
+                  num_actual_vals++;
+                }
               }
             }
-            unsigned int current_index = max_keys*in.num_vals;
+            unsigned int current_index = num_actual_vals;
+            if(!current_index) break;
 	    avg = sum/(double)(current_index);
             for(unsigned int i=0; i < current_index; i++)
                 sd += pow(flattened_data[i] - avg, 2);
