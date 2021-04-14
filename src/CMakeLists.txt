@@ -66,7 +66,7 @@ endif(${ENABLE_AGGREGATOR})
 
 if(${ENABLE_SYMBIOMON})
   target_include_directories (reducer-server PUBLIC ${SYMBIOMON_INCLUDE_DIR})
-  target_link_libraries (reducer-server ${SYMBIOMON_LIBRARIES})
+  target_link_libraries (reducer-server symbiomon-client symbiomon-server)
 endif(${ENABLE_SYMBIOMON})
 
 # admin library
