@@ -260,7 +260,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 max = (max < val_doubles[i][j] ? val_doubles[i][j] : max);
             }
             metric_name += "MAX";
-            fprintf(stderr, "Max is: %lf\n", max);
+            //fprintf(stderr, "Max is: %lf\n", max);
     	    ret = symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
             if(!ret) trigger_metric_file_write = true;
             symbiomon_metric_update(m, max);
@@ -315,14 +315,14 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
 
     if(trigger_metric_file_write == true) symbiomon_metric_list_all(provider->metric_provider, "reducer.metric_list"); 
 #endif
-    /*std::vector<std::string> res_k;
+    std::vector<std::string> res_k;
     for(auto ptr : keys) {
         res_k.push_back(std::string((const char*)ptr));
     }
 
     for(unsigned int i = 0; i < max_keys; i++)
         std::cout << "Received key: " << res_k[i].c_str() << " and val: " << val_doubles[i][0] << std::endl;
-    */
+    
     /* set the response */
     out.ret = REDUCER_SUCCESS;
 
