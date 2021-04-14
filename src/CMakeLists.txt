@@ -27,6 +27,10 @@ if(${ENABLE_AGGREGATOR})
   add_definitions("-DUSE_AGGREGATOR")
 endif(${ENABLE_AGGREGATOR})
 
+if(${ENABLE_SYMBIOMON})
+  add_definitions("-DUSE_SYMBIOMON")
+endif(${ENABLE_SYMBIOMON})
+
 # server library
 add_library (reducer-server ${server-src-files} ${dummy-src-files})
 target_link_libraries (reducer-server
@@ -59,6 +63,11 @@ if(${ENABLE_AGGREGATOR})
   target_include_directories (reducer-server PUBLIC ${SDSKV_INCLUDE_DIR})
   target_link_libraries (reducer-server PkgConfig::SDSKV)
 endif(${ENABLE_AGGREGATOR})
+
+if(${ENABLE_SYMBIOMON})
+  target_include_directories (reducer-server PUBLIC ${SYMBIOMON_INCLUDE_DIR})
+  target_link_libraries (reducer-server PkgConfig::SYMBIOMON)
+endif(${ENABLE_SYMBIOMON})
 
 # admin library
 add_library (reducer-admin ${admin-src-files})

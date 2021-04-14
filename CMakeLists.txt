@@ -8,8 +8,8 @@ add_definitions (-g -Wextra -Wall -Wpedantic -fpermissive)
 
 option (ENABLE_TESTS    "Build tests" OFF)
 option (ENABLE_AGGREGATOR   "Build the aggregator module" ON)
-
 option (ENABLE_BEDROCK  "Build bedrock module" OFF)
+option (ENABLE_SYMBIOMON  "Build symbiomon module" OFF)
 
 # add our cmake module directory to the path
 set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
@@ -33,6 +33,10 @@ find_package (PkgConfig REQUIRED)
 
 if (${ENABLE_BEDROCK})
     find_package(bedrock REQUIRED)
+endif ()
+
+if (${ENABLE_SYMBIOMON})
+    find_package(symbiomon REQUIRED)
 endif ()
 
 if (${ENABLE_AGGREGATOR})
@@ -60,4 +64,6 @@ if(${ENABLE_TESTS})
   add_subdirectory (tests)
 endif(${ENABLE_TESTS})
 
-add_subdirectory (bin)
+if(${ENABLE_SYMBIOMON})
+  add_subdirectory (bin)
+endif(${ENABLE_SYMBIOMON})
