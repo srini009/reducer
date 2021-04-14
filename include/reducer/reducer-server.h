@@ -9,6 +9,11 @@
 #include <reducer/reducer-common.h>
 #include <margo.h>
 #include <abt-io.h>
+#ifdef USE_SYMBIOMON
+#include <symbiomon/symbiomon-server.h>
+#include <symbiomon/symbiomon-metric.h>
+#include <symbiomon/symbiomon-common.h>
+#endif
 
 #ifdef __cplusplus
 extern "C" {
@@ -64,6 +69,11 @@ int reducer_provider_register(
  */
 int reducer_provider_destroy(
         reducer_provider_t provider);
+
+#ifdef USE_SYMBIOMON
+/* Set symbiomon_provider_t instance for metrics reporting*/
+int reducer_provider_set_symbiomon(reducer_provider_t provider, symbiomon_provider_t metric_provider);
+#endif
 
 #ifdef __cplusplus
 }

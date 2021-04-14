@@ -13,6 +13,11 @@
 #ifdef USE_AGGREGATOR
 #include <sdskv-client.h>
 #endif
+#ifdef USE_SYMBIOMON
+#include <symbiomon/symbiomon-server.h>
+#include <symbiomon/symbiomon-metric.h>
+#include <symbiomon/symbiomon-common.h>
+#endif
 
 #if defined(__cplusplus)
 extern "C" {
@@ -36,6 +41,9 @@ typedef struct reducer_provider {
     sdskv_client_t aggcl;
     sdskv_provider_handle_t * aggphs;
     sdskv_database_id_t * aggdbids;
+#endif
+#ifdef USE_SYMBIOMON
+    symbiomon_provider_t metric_provider;
 #endif
 } reducer_provider;
 

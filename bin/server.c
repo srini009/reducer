@@ -12,6 +12,9 @@
 #include <reducer/reducer-server.h>
 #include <reducer/reducer-metric.h>
 #include <reducer/reducer-common.h>
+#ifdef USE_SYMBIOMON
+#include <symbiomon/symbiomon-server.h>
+#endif
 
 int main(int argc, char** argv)
 {
@@ -35,6 +38,20 @@ int main(int argc, char** argv)
 
     reducer_provider_t provider;
     reducer_provider_register(mid, 42, &args, &provider);
+#ifdef USE_SYMBIOMON
+    /* initialize SYMBIOMON */
+    struct symbiomon_provider_args args = SYMBIOMON_PROVIDER_ARGS_INIT;
+    args.push_finalize_callback = 0;
+
+    symbiomon_provider_t metric_provider;
+    int ret = symbiomon_provider_register(mid, 42, &args, &metric_provider);
+    if(ret != 0)
+        fprintf(stderr, "Error: symbiomon_provider_register() failed. Continuing on.\n");
+           
+    ret = reducer_provider_set_symbiomon(provider, metric_provider);
+    if(ret != 0)
+        fprintf(stderr, "Error: reducer_provider_set_symbiomon() failed. Contuinuing on.\n");
+#endif
 
     margo_wait_for_finalize(mid);
 
