@@ -262,7 +262,6 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
               }
             }
             unsigned int current_index = num_actual_vals;
-            std::cout << "I get here with number of anomalies: " << num_actual_vals << std::endl;
             if(!current_index) break;
 	    avg = sum/(double)(current_index);
             for(unsigned int i=0; i < current_index; i++)
