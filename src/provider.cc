@@ -306,3 +306,4 @@ extern "C" int reducer_provider_set_symbiomon(reducer_provider_t provider, symbi
 {
     provider->metric_provider = metric_provider;
 }
+#endif
