@@ -305,5 +305,6 @@ extern "C" reducer_return_t reducer_provider_register_backend()
 extern "C" int reducer_provider_set_symbiomon(reducer_provider_t provider, symbiomon_provider_t metric_provider)
 {
     provider->metric_provider = metric_provider;
+    return REDUCER_SUCCESS;
 }
 #endif
