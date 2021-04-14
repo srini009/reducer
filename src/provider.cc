@@ -158,6 +158,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
 
     /* find the margo instance */
     margo_instance_id mid = margo_hg_handle_get_instance(h);
+    bool trigger_metric_file_write = false;
 
     /* find the provider */
     const struct hg_info* info = margo_get_info(h);
@@ -233,7 +234,8 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 sum += val_doubles[i][j];
             }
             metric_name += "SUM";
-    	    symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
+    	    ret = symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
+            if(!ret) trigger_metric_file_write = true;
             symbiomon_metric_update(m, sum);
             break;
         }
@@ -245,7 +247,8 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 min = (min > val_doubles[i][j] ? val_doubles[i][j] : min);
             }
             metric_name += "MIN";
-    	    symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
+    	    ret = symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
+            if(!ret) trigger_metric_file_write = true;
             symbiomon_metric_update(m, min);
             break;
         }
@@ -257,6 +260,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 max = (max < val_doubles[i][j] ? val_doubles[i][j] : max);
             }
             metric_name += "MAX";
+            if(!ret) trigger_metric_file_write = true;
     	    symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
             symbiomon_metric_update(m, max);
             break;
@@ -270,6 +274,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
             }
             avg = sum/(double)max_keys;
             metric_name += "AVG";
+            if(!ret) trigger_metric_file_write = true;
     	    symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
             symbiomon_metric_update(m, avg);
             break;
@@ -297,6 +302,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
 
             metric_name += "ANOMALY";
     	    symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
+            if(!ret) trigger_metric_file_write = true;
 	    for(unsigned int i=0; i < current_index; i++) {
                 if ((flattened_data[i] < avg-3*sd) || (flattened_data[i] > avg+3*sd)) {
                     symbiomon_metric_update(m, flattened_data[i]);
@@ -305,8 +311,8 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
             break;
         }
     }
- 
-    ret = symbiomon_metric_list_all(provider->metric_provider, "reducer.metric_list"); 
+
+    if(trigger_metric_file_write == true) symbiomon_metric_list_all(provider->metric_provider, "reducer.metric_list"); 
 #endif
     /*std::vector<std::string> res_k;
     for(auto ptr : keys) {
