@@ -194,9 +194,6 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     }
 
     /* Prepare for the SDSKV call */
-    std::string prefix(in.ns);
-    prefix += "_";
-    prefix += in.name;
     std::string metric_name(in.name);
     metric_name += "_GLOBAL_";
 
@@ -260,7 +257,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 max = (max < val_doubles[i][j] ? val_doubles[i][j] : max);
             }
             metric_name += "MAX";
-            //fprintf(stderr, "Max is: %lf\n", max);
+            fprintf(stderr, "Max is: %lf and keys_after is: %s\n", max, keys_after.c_str());
     	    ret = symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
             if(!ret) trigger_metric_file_write = true;
             symbiomon_metric_update(m, max);
