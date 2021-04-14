@@ -215,35 +215,59 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     switch(in.op) {
         case REDUCER_REDUCTION_OP_SUM: {
             double sum = 0.0;
-            for(unsigned int i = 0; i < max_keys; i++)
+            for(unsigned int i = 0; i < max_keys; i++) {
               for(unsigned int j = 0; j < in.num_vals; j++)
                 sum += val_doubles[i][j];
+            }
             break;
         }
         case REDUCER_REDUCTION_OP_MIN: {
             double min = val_doubles[0][0];
-            for(unsigned int i = 1; i < max_keys; i++)
+            for(unsigned int i = 1; i < max_keys; i++) {
               for(unsigned int j = 0; j < in.num_vals; j++)
                 min = (min > val_doubles[i][j] ? val_doubles[i][j] : min);
+            }
             break;
         }
         case REDUCER_REDUCTION_OP_MAX: {
             double max = val_doubles[0][0];
-            for(unsigned int i = 1; i < max_keys; i++)
+            for(unsigned int i = 1; i < max_keys; i++) {
               for(unsigned int j = 0; j < in.num_vals; j++)
                 max = (max < val_doubles[i][j] ? val_doubles[i][j] : max);
+            }
             break;
         }
         case REDUCER_REDUCTION_OP_AVG: {
             double sum = 0.0, avg = 0.0;
-            for(unsigned int i = 0; i < max_keys; i++)
+            for(unsigned int i = 0; i < max_keys; i++) {
               for(unsigned int j = 0; j < in.num_vals; j++)
                 sum += val_doubles[i][j];
+            }
             avg = sum/(double)max_keys;
             break;
         }
-        case REDUCER_REDUCTION_OP_ANOMALY:
+        case REDUCER_REDUCTION_OP_ANOMALY: {
+            std::vector<double> flattened_data;
+            double sum = 0, avg = 0, sd = 0;
+	    flattened_data.reserve(max_keys*in.num_vals);
+            for(unsigned int i = 0; i < max_keys; i++) {
+              for(unsigned int j = 0; j < in.num_vals; j++) {
+		flattened_data.push_back(val_doubles[i][j]);
+                sum += val_doubles[i][j];
+              }
+            }
+            unsigned int current_index = max_keys*in.num_vals;
+	    avg = sum/(double)(current_index);
+            for(unsigned int i=0; i < current_index; i++)
+                sd += pow(flattened_data[i] - avg, 2);
+
+	    for(unsigned int i=0; i < current_index; i++) {
+                if ((flattened_data[i] < avg-3*sd) || (m->buffer[i].val > avg+3*sd)) {
+                //add a symbiomon metric
+                }
+            }
             break;
+        }
     }
   
 
