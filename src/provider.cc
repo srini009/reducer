@@ -306,7 +306,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
         }
     }
  
-    symbiomon_metric_list_all(provider->metric_provider, "reducer.metric_list"); 
+    ret = symbiomon_metric_list_all(provider->metric_provider, "reducer.metric_list"); 
 #endif
     /*std::vector<std::string> res_k;
     for(auto ptr : keys) {
