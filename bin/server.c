@@ -47,9 +47,8 @@ int main(int argc, char** argv)
     int ret = symbiomon_provider_register(mid, 42, &symbiomon_args, &metric_provider);
     if(ret != 0) {
         fprintf(stderr, "Error: symbiomon_provider_register() failed. Continuing on.\n");
-    } else {
-        fprintf(stderr, "SYMBIOMON provider set successfully\n");          
     }
+
     ret = reducer_provider_set_symbiomon(provider, metric_provider);
     if(ret != 0)
         fprintf(stderr, "Error: reducer_provider_set_symbiomon() failed. Contuinuing on.\n");

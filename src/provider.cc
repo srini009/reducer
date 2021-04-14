@@ -165,7 +165,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
         out.ret = REDUCER_ERR_FROM_MERCURY;
         goto finish;
     }
-    
+
     std::string keys_after(in.key_start);
     keys_after += "_";
 
@@ -191,6 +191,9 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     std::string prefix(in.ns);
     prefix += "_";
     prefix += in.name;
+    std::string metric_name(in.name);
+    metric_name += "_GLOBAL_";
+
     size_t max_keys = in.max_keys;
     size_t max_key_size = 256; //max size of stringified metric string
     size_t max_val_size = in.num_vals; //max number of doubles you expect to receive
@@ -212,43 +215,63 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 keys.data(), ksizes.data(), vals.data(), vsizes.data(), &max_keys);
     assert(ret == SDSKV_SUCCESS);
 
+#ifdef USE_SYMBIOMON
+    symbiomon_taglist_t taglist;
+    symbiomon_taglist_create(&taglist, 0);
     /* Perform global reduction */
     switch(in.op) {
         case REDUCER_REDUCTION_OP_SUM: {
             double sum = 0.0;
+            symbiomon_metric_t m;
             for(unsigned int i = 0; i < max_keys; i++) {
               for(unsigned int j = 0; j < in.num_vals; j++)
                 sum += val_doubles[i][j];
             }
+            metric_name += "SUM";
+    	    symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
+            symbiomon_metric_update(m, sum);
             break;
         }
         case REDUCER_REDUCTION_OP_MIN: {
             double min = val_doubles[0][0];
+            symbiomon_metric_t m;
             for(unsigned int i = 1; i < max_keys; i++) {
               for(unsigned int j = 0; j < in.num_vals; j++)
                 min = (min > val_doubles[i][j] ? val_doubles[i][j] : min);
             }
+            metric_name += "MIN";
+    	    symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
+            symbiomon_metric_update(m, min);
             break;
         }
         case REDUCER_REDUCTION_OP_MAX: {
             double max = val_doubles[0][0];
+            symbiomon_metric_t m;
             for(unsigned int i = 1; i < max_keys; i++) {
               for(unsigned int j = 0; j < in.num_vals; j++)
                 max = (max < val_doubles[i][j] ? val_doubles[i][j] : max);
             }
+            metric_name += "MAX";
+    	    symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
+            symbiomon_metric_update(m, max);
             break;
         }
         case REDUCER_REDUCTION_OP_AVG: {
             double sum = 0.0, avg = 0.0;
+            symbiomon_metric_t m;
             for(unsigned int i = 0; i < max_keys; i++) {
               for(unsigned int j = 0; j < in.num_vals; j++)
                 sum += val_doubles[i][j];
             }
             avg = sum/(double)max_keys;
+            metric_name += "AVG";
+    	    symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
+            symbiomon_metric_update(m, avg);
             break;
         }
         case REDUCER_REDUCTION_OP_ANOMALY: {
             std::vector<double> flattened_data;
+            symbiomon_metric_t m;
             double sum = 0, avg = 0, sd = 0;
             unsigned int num_actual_vals = 0;
 	    flattened_data.reserve(max_keys*in.num_vals);
@@ -267,16 +290,18 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
             for(unsigned int i=0; i < current_index; i++)
                 sd += pow(flattened_data[i] - avg, 2);
 
+            metric_name += "ANOMALY";
+    	    symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
 	    for(unsigned int i=0; i < current_index; i++) {
                 if ((flattened_data[i] < avg-3*sd) || (flattened_data[i] > avg+3*sd)) {
-                //add a symbiomon metric
+                    symbiomon_metric_update(m, flattened_data[i]);
                 }
             }
             break;
         }
     }
   
-
+#endif
     /*std::vector<std::string> res_k;
     for(auto ptr : keys) {
         res_k.push_back(std::string((const char*)ptr));
