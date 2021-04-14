@@ -17,6 +17,11 @@
 #ifdef USE_AGGREGATOR
 #include <sdskv-client.h>
 #endif
+#ifdef USE_SYMBIOMON
+#include <symbiomon/symbiomon-metric.h>
+#include <symbiomon/symbiomon-common.h>
+#include <symbiomon/symbiomon-server.h>
+#endif
 
 static void reducer_finalize_provider(void* p);
 
