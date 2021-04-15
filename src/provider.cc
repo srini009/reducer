@@ -112,7 +112,6 @@ extern "C" int reducer_provider_register(
         p->use_aggregator = 1;
         p->aggphs = aggphs;
         p->aggdbids = aggdbids;
-	fprintf(stderr, "Successfully setup aggregator support\n");
     } else {
         fprintf(stderr, "AGGREGATOR_ADDRESS_FILE is not set. Continuing on without aggregator support");
     }
@@ -199,7 +198,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
 
     size_t max_keys = in.max_keys;
     size_t max_key_size = 256; //max size of stringified metric string
-    size_t max_val_size = 16;  //max number of doubles you expect to receive
+    size_t max_val_size = 16;  //put a limit on the max number of doubles you expect to receive
     std::vector<std::vector<char>> key_strings(max_keys, std::vector<char>(max_key_size+1));
     std::vector<std::vector<double>> val_doubles(max_keys, std::vector<double>(max_val_size+1, 0.0));
     std::vector<void*> keys(max_keys);
@@ -216,13 +215,10 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     prefix += "_";
     prefix += in.name;
     /* Make the SDSKV call */
-    //std::cout << "Keys after is: " << keys_after.c_str() << std::endl;
     int ret = sdskv_list_keyvals(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
                 (const void*)keys_after.c_str(), keys_after.size()+1,
                 keys.data(), ksizes.data(), vals.data(), vsizes.data(), &max_keys);
     assert(ret == SDSKV_SUCCESS);
-
-    //std::cout << "List keys with prefix returned: " << max_keys << std::endl;
 
 #ifdef USE_SYMBIOMON
     symbiomon_taglist_t taglist;
@@ -263,7 +259,6 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 max = (max < val_doubles[i][j] ? val_doubles[i][j] : max);
             }
             metric_name += "MAX";
-            fprintf(stderr, "Max is: %lf and keys_after is: %s\n", max, keys_after.c_str());
     	    ret = symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
             if(!ret) trigger_metric_file_write = true;
             symbiomon_metric_update(m, max);
