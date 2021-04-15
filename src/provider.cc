@@ -212,9 +212,12 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
         vals[i] = (void*)val_doubles[i].data();
     } 
 
+    std::string prefix(in.ns);
+    prefix += "_";
+    prefix += in.name;
     /* Make the SDSKV call */
-    int ret = sdskv_list_keyvals(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
-                (const void*)keys_after.c_str(), keys_after.size()+1,
+    int ret = sdskv_list_keyvals_with_prefix(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
+                (const void*)keys_after.c_str(), keys_after.size()+1, (void*)prefix.data(), strlen(prefix.c_str())+1,
                 keys.data(), ksizes.data(), vals.data(), vsizes.data(), &max_keys);
     assert(ret == SDSKV_SUCCESS);
 
