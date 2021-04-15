@@ -59,7 +59,6 @@ reducer_return_t reducer_metric_reduce(const char *ns, const char *name, const c
     in.key_start = key_start;
     in.agg_id = agg_id;
     in.op = op;
-    in.num_vals = num_vals;
     in.max_keys = cohort_size;
 
     ret = margo_create(handle->client->mid, handle->addr, handle->client->metric_reduce_id, &h);
