@@ -260,10 +260,8 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
             }
             metric_name += "MAX";
     	    ret = symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
-            fprintf(stderr, "Created metric with ns: %s, name: %s, and val: %lf\n", in.ns, metric_name.c_str(), max);
             if(!ret) trigger_metric_file_write = true;
             ret = symbiomon_metric_update(m, max);
-            fprintf(stderr, "Update metric returned %d\n", ret);
             break;
         }
         case REDUCER_REDUCTION_OP_AVG: {
