@@ -197,9 +197,9 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     std::string metric_name(in.name);
     metric_name += "_GLOBAL_";
 
-    size_t max_keys = in.max_keys;
+    size_t max_keys = 2*in.max_keys;
     size_t max_key_size = 256; //max size of stringified metric string
-    size_t max_val_size = 8;//in.num_vals; //max number of doubles you expect to receive
+    size_t max_val_size = 16;//in.num_vals; //max number of doubles you expect to receive
     std::vector<std::vector<char>> key_strings(max_keys, std::vector<char>(max_key_size+1));
     std::vector<std::vector<double>> val_doubles(max_keys, std::vector<double>(max_val_size+1, 0.0));
     std::vector<void*> keys(max_keys);
