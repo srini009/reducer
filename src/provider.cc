@@ -199,7 +199,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
 
     size_t max_keys = in.max_keys;
     size_t max_key_size = 256; //max size of stringified metric string
-    size_t max_val_size = in.num_vals; //max number of doubles you expect to receive
+    size_t max_val_size = 8//in.num_vals; //max number of doubles you expect to receive
     std::vector<std::vector<char>> key_strings(max_keys, std::vector<char>(max_key_size+1));
     std::vector<std::vector<double>> val_doubles(max_keys, std::vector<double>(max_val_size+1, 0.0));
     std::vector<void*> keys(max_keys);
@@ -216,8 +216,9 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     prefix += "_";
     prefix += in.name;
     /* Make the SDSKV call */
+    std::cout << "Keys after is: " << keys_after.c_str() << std::endl;
     int ret = sdskv_list_keyvals(provider->aggphs[in.agg_id], provider->aggdbids[in.agg_id], 
-                (const void*)keys_after.c_str(), keys_after.size(),
+                (const void*)keys_after.c_str(), keys_after.size()+1,
                 keys.data(), ksizes.data(), vals.data(), vsizes.data(), &max_keys);
     assert(ret == SDSKV_SUCCESS);
 
@@ -262,7 +263,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 max = (max < val_doubles[i][j] ? val_doubles[i][j] : max);
             }
             metric_name += "MAX";
-            fprintf(stderr, "Max is: %lf and keys_after is: %s\n", max, keys_after.c_str());
+            //fprintf(stderr, "Max is: %lf and keys_after is: %s\n", max, keys_after.c_str());
     	    ret = symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
             if(!ret) trigger_metric_file_write = true;
             symbiomon_metric_update(m, max);
@@ -322,8 +323,8 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
         res_k.push_back(std::string((const char*)ptr));
     }
 
-    for(unsigned int i = 0; i < max_keys; i++)
-        std::cout << "Received key: " << *res_k.rbegin() << " and val: " << val_doubles[i][0] << std::endl;
+    //for(unsigned int i = 0; i < max_keys; i++)
+    //    std::cout << "Received key: " << *res_k.rbegin() << " and val: " << val_doubles[i][0] << std::endl;
     
     /* set the response */
     out.ret = REDUCER_SUCCESS;
