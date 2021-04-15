@@ -221,6 +221,8 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 keys.data(), ksizes.data(), vals.data(), vsizes.data(), &max_keys);
     assert(ret == SDSKV_SUCCESS);
 
+    std::cout << "List keys with prefix returned: " << max_keys << std::endl;
+
 #ifdef USE_SYMBIOMON
     symbiomon_taglist_t taglist;
     symbiomon_taglist_create(&taglist, 0);
