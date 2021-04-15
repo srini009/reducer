@@ -323,7 +323,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     }
 
     for(unsigned int i = 0; i < max_keys; i++)
-        std::cout << "Received key: " << res_k[i].c_str() << " and val: " << val_doubles[i][0] << std::endl;
+        std::cout << "Received key: " << *res_k.rbegin() << " and val: " << val_doubles[i][0] << std::endl;
     
     /* set the response */
     out.ret = REDUCER_SUCCESS;
