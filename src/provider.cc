@@ -229,7 +229,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
             double sum = 0.0;
             symbiomon_metric_t m;
             for(unsigned int i = 0; i < max_keys; i++) {
-              for(unsigned int j = 0; j < in.num_vals; j++)
+              for(unsigned int j = 0; j < max_val_size; j++)
                 sum += val_doubles[i][j];
             }
             metric_name += "SUM";
@@ -242,7 +242,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
             double min = val_doubles[0][0];
             symbiomon_metric_t m;
             for(unsigned int i = 1; i < max_keys; i++) {
-              for(unsigned int j = 0; j < in.num_vals; j++)
+              for(unsigned int j = 0; j < max_val_size; j++)
                 min = (min > val_doubles[i][j] ? val_doubles[i][j] : min);
             }
             metric_name += "MIN";
@@ -255,7 +255,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
             double max = val_doubles[0][0];
             symbiomon_metric_t m;
             for(unsigned int i = 1; i < max_keys; i++) {
-              for(unsigned int j = 0; j < in.num_vals; j++)
+              for(unsigned int j = 0; j < max_val_size; j++)
                 max = (max < val_doubles[i][j] ? val_doubles[i][j] : max);
             }
             metric_name += "MAX";
@@ -268,7 +268,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
             double sum = 0.0, avg = 0.0;
             symbiomon_metric_t m;
             for(unsigned int i = 0; i < max_keys; i++) {
-              for(unsigned int j = 0; j < in.num_vals; j++)
+              for(unsigned int j = 0; j < max_val_size; j++)
                 sum += val_doubles[i][j];
             }
             avg = sum/(double)max_keys;
@@ -283,9 +283,9 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
             symbiomon_metric_t m;
             double sum = 0, avg = 0, sd = 0;
             unsigned int num_actual_vals = 0;
-	    flattened_data.reserve(max_keys*in.num_vals);
+	    flattened_data.reserve(max_keys*max_val_size);
             for(unsigned int i = 0; i < max_keys; i++) {
-              for(unsigned int j = 0; j < in.num_vals; j++) {
+              for(unsigned int j = 0; j < max_val_size; j++) {
 		if(val_doubles[i][j]) {
                   flattened_data.push_back(val_doubles[i][j]);
                   sum += val_doubles[i][j];
