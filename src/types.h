@@ -24,7 +24,7 @@ MERCURY_GEN_PROC(metric_reduce_in_t,
 	((hg_string_t)(key_start))\
 	((hg_size_t)(max_keys))\
         ((uint32_t)(agg_id))\
-        ((size_t)(num_vals))\
+        ((hg_size_t)(num_vals))\
         ((int32_t)(op)))
 
 MERCURY_GEN_PROC(metric_reduce_out_t,
