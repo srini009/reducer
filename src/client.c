@@ -25,6 +25,7 @@ reducer_return_t reducer_client_init(margo_instance_id mid, reducer_client_t* cl
         margo_registered_name(mid, "reducer_metric_reduce", &c->metric_reduce_id, &flag);
     } else {
         c->metric_reduce_id = MARGO_REGISTER(mid, "reducer_metric_reduce", metric_reduce_in_t, metric_reduce_out_t, NULL);
+        margo_registered_disable_response(c->mid, c->metric_reduce_id, HG_TRUE);
     }
 
     c->num_metric_handles = 0;
@@ -71,7 +72,8 @@ reducer_return_t reducer_metric_reduce(const char *ns, const char *name, const c
 	return REDUCER_ERR_FROM_MERCURY;
     }
 
-    ret = margo_get_output(h, &out);
+    return REDUCER_SUCCESS;
+    /*ret = margo_get_output(h, &out);
     if(ret != HG_SUCCESS) {
 	margo_free_output(h, &out);
         margo_destroy(h);
@@ -79,7 +81,7 @@ reducer_return_t reducer_metric_reduce(const char *ns, const char *name, const c
     }
 
     margo_free_output(h, &out);
-    margo_destroy(h);
+    margo_destroy(h);*/
 
 }
 

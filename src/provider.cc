@@ -76,7 +76,9 @@ extern "C" int reducer_provider_register(
             metric_reduce_in_t, metric_reduce_out_t,
             reducer_metric_reduce_ult, provider_id, p->pool);
     margo_register_data(mid, id, (void*)p, NULL);
+ 
     p->metric_reduce_id = id;
+    margo_registered_disable_response(p->mid, p->metric_reduce_id, HG_TRUE); 
 
     p->use_aggregator = 0;
 
@@ -322,10 +324,10 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     //    std::cout << "Received val: " << val_doubles[i][0] << std::endl;
     
     /* set the response */
-    out.ret = REDUCER_SUCCESS;
+    //out.ret = REDUCER_SUCCESS;
 
 finish:
-    hret = margo_respond(h, &out);
+    //hret = margo_respond(h, &out);
     hret = margo_free_input(h, &in);
     margo_destroy(h);
 }
