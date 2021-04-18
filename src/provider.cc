@@ -170,7 +170,8 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     if(hret != HG_SUCCESS) {
         margo_info(provider->mid, "Could not deserialize output (mercury error %d)", hret);
         out.ret = REDUCER_ERR_FROM_MERCURY;
-        goto finish;
+        hret = margo_free_input(h, &in);
+        margo_destroy(h);
     }
 
     std::string keys_after(in.key_start);
@@ -325,8 +326,6 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     
     /* set the response */
     //out.ret = REDUCER_SUCCESS;
-
-finish:
     //hret = margo_respond(h, &out);
     hret = margo_free_input(h, &in);
     margo_destroy(h);
