@@ -324,7 +324,6 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
 
     //for(unsigned int i = 0; i < max_keys; i++)
     //    std::cout << "Received val: " << val_doubles[i][0] << std::endl;
-    fprintf(stderr, "Yep, I get a call\n");
     /* set the response */
     //out.ret = REDUCER_SUCCESS;
     //hret = margo_respond(h, &out);
