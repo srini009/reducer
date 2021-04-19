@@ -109,6 +109,7 @@ extern "C" int reducer_provider_register(
 	  assert(hret == SDSKV_SUCCESS);
 	  hret = sdskv_open(aggphs[i], db_name, &aggdbids[i]); 
 	  assert(hret == SDSKV_SUCCESS);
+	  fprintf(stderr, "Reducer: Able to open dbs\n");
           i++;
         }
         p->use_aggregator = 1;
