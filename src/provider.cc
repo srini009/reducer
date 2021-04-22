@@ -258,14 +258,12 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
         case REDUCER_REDUCTION_OP_MAX: {
             double max = val_doubles[0][0];
             symbiomon_metric_t m;
-            metric_name += "MAX";
             for(unsigned int i = 1; i < max_keys; i++) {
               for(unsigned int j = 0; j < max_val_size; j++) {
-                //fprintf(stderr, "Global candidate max value: %s is %lf\n", key_strings[i].data(), val_doubles[i][j]);
                 max = (max < val_doubles[i][j] ? val_doubles[i][j] : max);
               }
             }
-            fprintf(stderr, "Global max value for: %s is %lf\n", metric_name.c_str(), max);
+            metric_name += "MAX";
     	    ret = symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
             if(!ret) trigger_metric_file_write = true;
             ret = symbiomon_metric_update(m, max);
