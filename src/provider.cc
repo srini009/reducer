@@ -261,7 +261,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
             metric_name += "MAX";
             for(unsigned int i = 1; i < max_keys; i++) {
               for(unsigned int j = 0; j < max_val_size; j++) {
-                fprintf(stderr, "Global candidate max value: %s is %lf\n", key_strings[i].data(), val_doubles[i][j]);
+                //fprintf(stderr, "Global candidate max value: %s is %lf\n", key_strings[i].data(), val_doubles[i][j]);
                 max = (max < val_doubles[i][j] ? val_doubles[i][j] : max);
               }
             }
