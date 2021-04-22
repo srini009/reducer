@@ -263,6 +263,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
                 max = (max < val_doubles[i][j] ? val_doubles[i][j] : max);
             }
             metric_name += "MAX";
+            fprintf(stderr, "Global max value for: %s is %lf\n", metric_name, max);
     	    ret = symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
             if(!ret) trigger_metric_file_write = true;
             ret = symbiomon_metric_update(m, max);
