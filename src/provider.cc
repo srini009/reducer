@@ -201,7 +201,7 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
     metric_name += "_GLOBAL_";
 
     size_t max_keys = in.max_keys;
-    size_t max_key_size = 80; //max size of stringified metric string
+    size_t max_key_size = 256; //max size of stringified metric string
     size_t max_val_size = 8;  //put a limit on the max number of doubles you expect to receive
     std::vector<std::vector<char>> key_strings(max_keys, std::vector<char>(max_key_size+1));
     std::vector<std::vector<double>> val_doubles(max_keys, std::vector<double>(max_val_size+1, 0.0));
@@ -246,8 +246,10 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
             double min = val_doubles[0][0];
             symbiomon_metric_t m;
             for(unsigned int i = 1; i < max_keys; i++) {
-              for(unsigned int j = 0; j < max_val_size; j++)
+              for(unsigned int j = 0; j < max_val_size; j++) {
+                 fprintf(stderr, "Values for %s being considered are: %lf\n", metric_name.c_str(), val_doubles[i][j]);
                 min = (min > val_doubles[i][j] ? val_doubles[i][j] : min);
+              }
             }
             metric_name += "MIN";
     	    ret = symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
@@ -266,7 +268,6 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
             }
             metric_name += "MAX";
     	    ret = symbiomon_metric_create(in.ns, metric_name.c_str(), SYMBIOMON_TYPE_GAUGE, metric_name.c_str(), taglist, &m, provider->metric_provider);
-            fprintf(stderr, "Global max for: %s is %lf\n", metric_name.c_str(), max);
             if(!ret) trigger_metric_file_write = true;
             ret = symbiomon_metric_update(m, max);
             break;
