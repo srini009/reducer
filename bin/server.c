@@ -18,7 +18,7 @@
 
 int main(int argc, char** argv)
 {
-    margo_instance_id mid = margo_init(argv[1], MARGO_SERVER_MODE, 0, -1);
+    margo_instance_id mid = margo_init(argv[1], MARGO_SERVER_MODE, 1, 1);
     assert(mid);
 
     hg_addr_t my_address;
