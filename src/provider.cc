@@ -245,10 +245,11 @@ static void reducer_metric_reduce_ult(hg_handle_t h)
         case REDUCER_REDUCTION_OP_MIN: {
               
             double min = 999999999999.0;
-            if(val_doubles[0][0]) min = val_doubles[0][0];
+            if(val_doubles[0][0]) {min = val_doubles[0][0];}
             symbiomon_metric_t m;
             for(unsigned int i = 1; i < max_keys; i++) {
               for(unsigned int j = 0; j < max_val_size; j++) {
+                if(val_doubles[i][j]) { continue; }
                 min = (min > val_doubles[i][j] ? val_doubles[i][j] : min);
               }
             }
