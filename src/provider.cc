@@ -52,7 +52,7 @@ extern "C" int reducer_provider_register(
         return REDUCER_ERR_INVALID_ARGS;
     }
 
-    margo_provider_registered_name(mid, "reducer_remote_metric_fetch", provider_id, &id, &flag);
+    margo_provider_registered_name(mid, "reducer_metric_reduce", provider_id, &id, &flag);
     if(flag == HG_TRUE) {
         margo_error(mid, "Provider with the same provider id (%u) already register", provider_id);
         return REDUCER_ERR_INVALID_PROVIDER;
